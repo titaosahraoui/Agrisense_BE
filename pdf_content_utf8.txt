@@ -1,0 +1,361 @@
+Number of pages: 13
+A G R I S E N S E
+P L A T E F O R M E  D E  P R É D I C T I O N  D E S  R E N D E M E N T S  E T
+D E  D É T E C T I O N  D U  S T R E S S  H Y D R I Q U E
+   
+ 
+ 1  
+ 
+Table des matiere : 
+Table des matiere : ................................ ................................ ................................ .... 1 
+1. Introduction :................................ ................................ ................................ ............ 3 
+2. Contexte : ................................ ................................ ................................ ................ 5 
+3. Objectifs du projet : ................................ ................................ ................................ .. 6 
+Objectifs spécifiques : ................................ ................................ ...............................  6 
+  1. Estimation et prédiction des rendements agricoles ................................ ...... 6 
+  2. Détection et alerte précoce du stress hydrique ................................ ............ 7 
+  3. Interface et visualisation ................................ ................................ ............ 7 
+4. Méthodologie et déroulement du projet : ................................ ................................ .... 7 
+Phase 1 : Collecte et préparation des données : ................................ ..........................  8 
+  Sources de données ................................ ................................ ......................  8 
+  Préparation et nettoyage ................................ ................................ ................ 8 
+Phase 2 : Analyse exploratoire et sélection des variable : ................................ ............. 8 
+Phase 3 : Modélisation et apprentissage automatique : ................................ ................ 9 
+  Pour la prédiction des rendements :................................ ................................  9 
+  Pour la détection du stress hydrique : ................................ .............................  9 
+Phase 4 : Développement de l’application web : ................................ ..........................  9 
+  Backend (Python + Framework IA & API) ................................ ..........................  9 
+  Frontend (React + TypeScript) ................................ ................................ ........ 9 
+Phase 5 : Validation, tests et documentation : ................................ ...........................  10 
+5. Besoins en données et ressources ................................ ................................ ........... 10 
+5.1 Besoins en données ................................ ................................ ...........................  10 
+  a. Données agricoles ................................ ................................ ...................  10 
+  b. Données météorologiques ................................ ................................ ....... 10 
+  c. Données satellitaires ................................ ................................ ............... 11 
+  d. Données locales (si disponibles) ................................ ...............................  11 
+   
+ 
+ 2  
+ 
+5.2 Ressources techniques ................................ ................................ ......................  11 
+  a. Environnement de développement ................................ ............................  11 
+  b. Outils de traitement et d’analyse ................................ ..............................  11 
+1. 6. Conclusion................................ ................................ ................................ ...... 12 
+ 
+  
+   
+ 
+ 3  
+ 
+1. Introduction : 
+Dans un contexte marqué par les changements climatiques, la raréfaction de l’eau et la 
+nécessité d’une gestion durable des ressources agricoles, l’Algérie fait face à des défis 
+majeurs pour garantir la sécurité alimentaire et optimiser les performances de son secteur 
+agricole. Les aléas météorologiques, la variabilité des précipitations et les sécheresses 
+récurrentes rendent difficile la planification des cultures et la gestion efficace des 
+ressources hydriques. 
+Face à ces enjeux, les outils d’intelligence artificielle (IA) et d’analyse des données 
+satellitaires offrent aujourd’hui des perspectives nouvelles. Ils permettent d’exploiter les 
+données de télédétection, les observations météorologiques et les historiques de 
+production pour anticiper les rendements agricoles et détecter précocement les situations 
+de stress hydrique. Ces approches s’inscrivent pleinement dans les initiatives 
+d’agriculture intelligente face au climat (“Climate Smart Agriculture”) promues par de 
+nombreuses institutions internationales et nationales. 
+Le présent projet, intitulé « Plateforme d’intelligence agricole pour la prédiction des 
+rendements et la détection du stress hydrique », a pour objectif de développer une 
+application web de démonstration intégrant ces deux volets complémentaires : 
+1. Estimation / Prédiction des rendements agricoles par filière 
+ Ce module vise à prédire les rendements des principales cultures (ex. blé, olives, 
+dattes) à partir de données historiques, météorologiques et satellitaires (Sentinel, 
+Landsat). 
+ Les résultats sont visualisés sous forme de cartes interactives et de tableaux 
+comparatifs permettant d’analyser les écarts entre rendements observés et 
+prédits. 
+2. Détection et alerte précoce du stress hydrique 
+ Ce module permet d’identifier les zones agricoles à risque de sécheresse ou de 
+déficit hydrique, grâce à des indices satellitaires tels que le NDWI (Normalized 
+Difference Water Index) et le NDVI (Normalized Difference Vegetation Index), 
+combinés à des données pluviométriques. 
+ Un système d’alerte permet de signaler les zones prioritaires nécessitant une 
+intervention. 
+Le projet sera réalisé dans le cadre d’un stage académique individuel, sur une période de 
+six (6) mois. Il prendra la forme d’un prototype fonctionnel (Proof of Concept), destiné à 
+   
+ 
+ 4  
+ 
+démontrer la faisabilité et la pertinence d’une telle solution pour le ministère de 
+l’Agriculture et les institutions de recherche agricole. 
+Sur le plan technologique, la solution repose sur une architecture moderne et évolutive : 
+• Frontend : développé en React avec TypeScript, pour offrir une interface claire, 
+réactive et interactive ; 
+• Backend : construit avec Python et FastAPI, permettant le traitement des données, 
+la communication avec les modèles d’apprentissage automatique, et la gestion des 
+API ; 
+• Machine Learning : utilisation de bibliothèques telles que scikit-learn et PyTorch 
+pour les modèles de prédiction et de détection ; 
+• Cartographie : intégration de cartes géospatiales interactives via Mapbox ou 
+Leaflet pour la visualisation des résultats. 
+L’objectif final est de présenter une preuve de concept complète, capable de : 
+• collecter et exploiter des données ouvertes (satellitaires, météorologiques, 
+agricoles) ; 
+• extraire des indicateurs pertinents (NDVI, NDWI, précipitations, température, 
+humidité) ; 
+• produire des modèles de prédiction simples mais efficaces pour estimer les 
+rendements ; 
+• identifier automatiquement les zones à risque de stress hydrique ; 
+• visualiser les résultats sous une forme claire et compréhensible par les décideurs 
+et les techniciens agricoles. 
+Ce projet, à la fois technique et appliqué, illustre la convergence entre l’intelligence 
+artificielle, la télédétection et la gestion durable des ressources agricoles. 
+ Il s’inscrit dans une logique de valorisation des données ouvertes et de modernisation 
+de la prise de décision agricole, contribuant ainsi aux efforts du pays pour renforcer la 
+résilience de son agriculture face aux défis climatiques. 
+ 
+ 
+   
+ 
+ 5  
+ 
+2. Contexte : 
+L’agriculture représente un pilier essentiel de l’économie algérienne, occupant une part 
+importante de la population active et contribuant de manière significative à la sécurité 
+alimentaire nationale. Cependant, ce secteur demeure fortement dépendant des 
+conditions climatiques et des ressources en eau, lesquelles sont de plus en plus 
+menacées par les effets du changement climatique. 
+Au cours des dernières années, l’Algérie a connu plusieurs épisodes de sécheresse 
+sévère, entraînant une baisse notable des rendements agricoles et une pression accrue 
+sur les ressources hydriques. Ces phénomènes climatiques irréguliers ont mis en 
+évidence la nécessité d’outils d’aide à la décision permettant d’anticiper les risques, 
+d’améliorer la gestion de l’eau et d’optimiser la planification agricole à différentes échelles 
+(commune, wilaya, région). 
+Parallèlement, les avancées récentes dans le domaine de la télédétection et du 
+traitement des données massives (Big Data) offrent des possibilités inédites pour 
+observer, analyser et modéliser les dynamiques agricoles. Les satellites tels que Sentinel 
+ou Landsat permettent aujourd’hui d’obtenir des images multispectrales à haute 
+résolution spatiale et temporelle, fournissant des informations précieuses sur la santé de 
+la végétation, l’humidité du sol, et la couverture terrestre. 
+Combinées à des données météorologiques (pluviométrie, température, humidité, 
+rayonnement solaire) et à des historiques de production agricole, ces informations 
+constituent une base solide pour développer des modèles d’apprentissage automatique 
+(Machine Learning) capables de : 
+• prédire les rendements futurs selon les conditions observées, 
+• détecter précocement les zones en situation de stress hydrique, 
+• appuyer la planification et la prise de décision stratégique. 
+Cependant, malgré la disponibilité croissante de ces données, leur exploitation reste 
+limitée en Algérie, notamment en raison du manque d’outils intégrés, de plateformes 
+accessibles et de compétences techniques locales capables d’unifier ces sources 
+hétérogènes. 
+Dans ce contexte, la mise en place d’une plateforme web intelligente basée sur des 
+technologies modernes (React, TypeScript, Python, FastAPI, et outils géospatiaux) 
+constitue une solution innovante et pertinente. 
+   
+ 
+ 6  
+ 
+ Elle permettra non seulement de centraliser et visualiser les données agricoles et 
+environnementales, mais aussi de démontrer concrètement l’intérêt des méthodes 
+d’intelligence artificielle dans la gestion durable de l’agriculture. 
+Le projet s’inscrit également dans une démarche pédagogique et scientifique. Réalisé 
+dans le cadre d’un stage académique individuel, il a pour vocation de : 
+• servir de prototype de recherche appliquée en science des données et en 
+agriculture intelligente, 
+• illustrer la faisabilité technique d’un système national de surveillance et de 
+prévision agricole, 
+• et contribuer à une meilleure sensibilisation des acteurs publics et institutionnels 
+à l’importance de la donnée dans la prise de décision agricole. 
+En somme, ce projet constitue une première étape vers le développement d’un 
+écosystème numérique agricole, capable d’assister les décideurs, les ingénieurs 
+agronomes et les producteurs dans la planification des cultures, la gestion de l’eau, et la 
+prévention des crises liées au climat. 
+ 
+ 
+3. Objectifs du projet : 
+L’objectif général de ce projet est de développer une application web intelligente 
+permettant de surveiller, prédire et alerter sur l’état des cultures agricoles en Algérie à 
+l’aide de données locales, météorologiques et satellitaires. 
+ Cette plateforme vise à fournir aux décideurs (ministère de l’Agriculture, offices 
+régionaux, agriculteurs) un outil d’aide à la décision pour anticiper les risques et optimiser 
+la planification agricole. 
+Objectifs spécifiques : 
+🔹 1. Estimation et prédiction des rendements agricoles 
+• Collecter et centraliser les données historiques de production agricole (par wilaya 
+et filière). 
+   
+ 
+ 7  
+ 
+• Intégrer les données météorologiques (température, pluviométrie, humidité, 
+anomalies thermiques). 
+• Exploiter les images satellites (Sentinel, Landsat) pour calculer des indices de 
+végétation (NDVI, EVI, etc.). 
+• Développer des modèles d’apprentissage automatique (régression, forêts 
+aléatoires, réseaux neuronaux légers) pour prédire les rendements futurs. 
+• Générer une carte géospatiale interactive illustrant les prévisions de rendement à 
+l’échelle communale ou wilayale. 
+🔹 2. Détection et alerte précoce du stress hydrique 
+• Analyser les données satellitaires (NDWI, indice de sécheresse) et météorologiques 
+(pluviométrie, température). 
+• Mettre en place un modèle de classification détectant les zones à risque de stress 
+hydrique ou déficit en irrigation. 
+• Développer un système d’alerte automatique par wilaya ou commune. 
+• Fournir sur la carte interactive un indicateur visuel des zones critiques, 
+accompagné de recommandations (irrigation prioritaire, vérification terrain, etc.). 
+🔹 3. Interface et visualisation 
+• Concevoir une interface web moderne et intuitive (React + TypeScript) pour 
+afficher : 
+o les prévisions de rendement, 
+o les zones à risque hydrique, 
+o les comparaisons entre données observées et prédites. 
+• Intégrer un tableau de bord analytique (dashboard) pour suivre l’évolution 
+temporelle et spatiale. 
+ 
+4. Méthodologie et déroulement du projet : 
+La méthodologie adoptée repose sur une approche progressive et intégrée, combinant 
+analyse de données, modélisation par intelligence artificielle et développement web 
+interactif. 
+ Le projet sera mené sur une durée de 6 mois, structurée en plusieurs phases 
+   
+ 
+ 8  
+ 
+successives et interdépendantes, afin d’assurer une évolution cohérente entre la 
+recherche, la conception et la démonstration finale. 
+ 
+Phase 1 : Collecte et préparation des données : 
+🔹 Sources de données 
+• Données historiques agricoles : rendements par filière (céréales, dattes, olives, 
+etc.) et par wilaya. 
+• Données météorologiques : température, pluviométrie, humidité, anomalies 
+thermiques. 
+• Images satellites : Sentinel-2, Landsat (télédétection multispectrale). 
+• Données locales (si disponibles) : mesures issues de capteurs ou enquêtes 
+régionales. 
+🔹 Préparation et nettoyage 
+• Normalisation et harmonisation des formats. 
+• Gestion des valeurs manquantes et outliers. 
+• Découpage spatial (wilaya/commune) et temporel (saison, année). 
+• Extraction des indices de végétation et d’eau : NDVI, EVI, NDWI, indice de 
+sécheresse, etc. 
+ 
+Phase 2 : Analyse exploratoire et sélection des variable : 
+• Étude des corrélations entre variables (pluviométrie, NDVI, rendement, etc.). 
+• Identification des indicateurs les plus pertinents. 
+• Visualisation spatiale et temporelle pour comprendre les dynamiques agricoles. 
+• Préparation des jeux de données pour l’apprentissage (train/test). 
+ 
+   
+ 
+ 9  
+ 
+Phase 3 : Modélisation et apprentissage automatique : 
+🔹 Pour la prédiction des rendements : 
+• Modèles de régression : Random Forest, Gradient Boosting, Régression Linéaire, 
+Réseaux neuronaux légers. 
+• Validation croisée et ajustement des hyperparamètres. 
+• Évaluation par métriques : RMSE, R², MAE. 
+🔹 Pour la détection du stress hydrique : 
+• Modèles de classification supervisée (Random Forest, SVM, CNN léger sur 
+NDVI/NDWI). 
+• Définition de seuils de risque et de classes (normal / à risque). 
+• Analyse de précision, rappel et matrice de confusion. 
+ 
+Phase 4 : Développement de l’application web : 
+🔹 Backend (Python + Framework IA & API) 
+• Intégration des modèles ML pour prédiction et alerte. 
+• Création d’une API REST (ex. FastAPI / Flask) pour exposer les données et résultats. 
+• Gestion des requêtes géospatiales (coordonnées, filtres régionaux). 
+🔹 Frontend (React + TypeScript) 
+• Tableau de bord interactif : 
+o Cartes dynamiques (rendus via Leaflet ou Mapbox). 
+o Graphiques et comparaisons temporelles (rendement observé vs prédit). 
+o Affichage des zones à risque hydrique et notifications. 
+• Design ergonomique et responsive (Tailwind CSS). 
+ 
+   
+ 
+ 10  
+ 
+Phase 5 : Validation, tests et documentation : 
+• Vérification des performances globales (rapidité, fiabilité, cohérence). 
+• Comparaison des résultats prédits aux données réelles récentes. 
+• Rédaction du rapport technique : méthodologie, résultats, limites, incertitudes. 
+• Préparation de la démonstration finale destinée à l’école et au ministère de 
+l’Agriculture. 
+5. Besoins en données et ressources 
+Le bon déroulement de ce projet repose sur la disponibilité de données fiables et sur 
+l’utilisation d’outils technologiques adaptés pour la collecte, le traitement et la 
+visualisation. 
+ Les besoins se répartissent en deux grandes catégories : les besoins en données et les 
+besoins en ressources techniques et logicielles. 
+ 
+5.1 Besoins en données 
+🔹 a. Données agricoles 
+• Historique des rendements par filière (céréales, olives, dattes, légumes, etc.). 
+• Localisation géographique des zones de production (wilayas, communes, 
+parcelles). 
+• Données de surfaces cultivées, types de sol, pratiques agricoles. 
+• Sources possibles : Ministère de l’Agriculture, FAO, Office National des Statistiques 
+(ONS), instituts de recherche. 
+🔹 b. Données météorologiques 
+• Températures quotidiennes et mensuelles. 
+• Précipitations, humidité, rayonnement solaire, vitesse du vent. 
+• Données d’anomalies thermiques et d’évapotranspiration. 
+• Sources possibles : Algérie Météo, NOAA, NASA POWER API, Copernicus. 
+   
+ 
+ 11  
+ 
+🔹 c. Données satellitaires 
+• Sentinel-2 (résolution 10–20 m, bandes visibles et infrarouges). 
+• Landsat 8/9 (indices de végétation et d’humidité). 
+• Extraction d’indices spectraux : 
+o NDVI (Normalized Difference Vegetation Index) 
+o EVI (Enhanced Vegetation Index) 
+o NDWI (Normalized Difference Water Index) 
+o LST (Land Surface Temperature) 
+• Sources : ESA (Copernicus Open Access Hub), USGS Earth Explorer, Google Earth 
+Engine. 
+🔹 d. Données locales (si disponibles) 
+• Mesures terrain (capteurs d’humidité, relevés de pluviométrie). 
+• Informations fournies par les agriculteurs ou les directions régionales. 
+• Données issues de projets existants (agriculture durable, irrigation). 
+ 
+5.2 Ressources techniques 
+🔹 a. Environnement de développement 
+• Frontend : React + TypeScript, Tailwind CSS, Leaflet/Mapbox pour la cartographie. 
+• Backend / API : Python (FastAPI ou Flask), Pandas, NumPy, Scikit-learn, 
+TensorFlow ou PyTorch pour les modèles IA. 
+• Base de données : PostgreSQL + PostGIS (pour gestion des données géospatiales). 
+🔹 b. Outils de traitement et d’analyse 
+• Google Earth Engine / Sentinel Hub API (télédétection et extraction d’indices). 
+• Jupyter Notebook pour le prototypage des modèles. 
+• QGIS pour la validation et la cartographie. 
+ 
+ 
+   
+ 
+ 12  
+ 
+1. 6. Conclusion 
+Ce projet s’inscrit dans une démarche d’innovation technologique au service du secteur 
+agricole algérien. 
+ En combinant les données locales, météorologiques et satellitaires avec des modèles 
+d’intelligence artificielle et une interface web interactive, il vise à offrir une solution 
+complète de suivi, de prévision et d’alerte pour la performance agricole et la gestion de 
+l’eau. 
+La plateforme permettra non seulement de prédire les rendements par filière et par 
+région, mais aussi de détecter précocement les zones exposées au stress hydrique, 
+contribuant ainsi à une meilleure planification et à une utilisation plus rationnelle des 
+ressources naturelles. 
+Réaliser ce projet seul, dans le cadre d’un stage, représente un défi technique et 
+scientifique ambitieux, mais aussi une opportunité concrète de démontrer la valeur 
+des technologies IA et SIG dans la gestion agricole durable. 
+ À travers cette initiative, l’objectif est de proposer un prototype fonctionnel pouvant 
+servir de base à un futur projet pilote national, aligné sur les priorités du ministère de 
+l’Agriculture en matière d’agriculture climato-intelligente et de sécurité alimentaire. 
+En conclusion, ce projet vise à prouver que l’alliance entre innovation, données et 
+engagement local peut contribuer à une agriculture plus résiliente, prédictive et 
+durable pour l’Algérie de demain. 
+ 
+ 

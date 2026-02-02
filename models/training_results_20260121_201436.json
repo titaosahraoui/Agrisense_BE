@@ -1,0 +1,542 @@
+{
+  "results": {
+    "random_forest": {
+      "mse": 0.3922770847871131,
+      "rmse": 0.6263202733323527,
+      "mae": 0.0627824325986339,
+      "r2": 0.9987395255566047,
+      "description": "Random Forest - Good for nonlinear relationships"
+    },
+    "xgboost": {
+      "mse": 0.45667578493502103,
+      "rmse": 0.6757779109552347,
+      "mae": 0.3450093563909634,
+      "r2": 0.9985325980584859,
+      "description": "XGBoost - Great for tabular data with missing values"
+    },
+    "lightgbm": {
+      "mse": 0.7733458919347788,
+      "rmse": 0.879400871010928,
+      "mae": 0.42102596312100005,
+      "r2": 0.9975150658284883,
+      "description": "LightGBM - Fast and handles large datasets well"
+    },
+    "gradient_boosting": {
+      "mse": 0.26906132780541375,
+      "rmse": 0.5187112181218118,
+      "mae": 0.26074104913405327,
+      "r2": 0.9991354454783186,
+      "description": "Gradient Boosting - Robust to outliers"
+    },
+    "ridge": {
+      "mse": 42.703799905869936,
+      "rmse": 6.534814450760629,
+      "mae": 5.125187555977695,
+      "r2": 0.8627830926029596,
+      "description": "Ridge Regression - Good baseline linear model"
+    }
+  },
+  "best_model": "gradient_boosting",
+  "feature_importance": {
+    "by_model": {
+      "random_forest": [
+        {
+          "feature": "evapotranspiration",
+          "importance": 0.584613314770242
+        },
+        {
+          "feature": "precipitation",
+          "importance": 0.19551207327345904
+        },
+        {
+          "feature": "ndvi",
+          "importance": 0.08891219312547229
+        },
+        {
+          "feature": "temperature_avg",
+          "importance": 0.05748698085211093
+        },
+        {
+          "feature": "temperature_max",
+          "importance": 0.04424739583826851
+        },
+        {
+          "feature": "ndwi",
+          "importance": 0.024159991649782775
+        },
+        {
+          "feature": "humidity",
+          "importance": 0.002436709664407941
+        },
+        {
+          "feature": "lst",
+          "importance": 0.0012366265522073968
+        },
+        {
+          "feature": "aridity_index",
+          "importance": 0.0008627880317921066
+        },
+        {
+          "feature": "ndvi_trend",
+          "importance": 0.0001740694185721097
+        },
+        {
+          "feature": "heat_index",
+          "importance": 0.00013017838578976854
+        },
+        {
+          "feature": "ndvi_lag7",
+          "importance": 0.00011932160544075293
+        },
+        {
+          "feature": "temperature_min",
+          "importance": 1.7708262119761488e-05
+        },
+        {
+          "feature": "temperature_avg_lag30",
+          "importance": 1.7112367483182876e-05
+        },
+        {
+          "feature": "ndvi_lag30",
+          "importance": 1.1807753513997506e-05
+        },
+        {
+          "feature": "temperature_avg_lag7",
+          "importance": 9.358707794432948e-06
+        },
+        {
+          "feature": "humidity_lag30",
+          "importance": 8.836446120479517e-06
+        },
+        {
+          "feature": "humidity_lag7",
+          "importance": 8.158582408036246e-06
+        },
+        {
+          "feature": "solar_radiation",
+          "importance": 7.973984376799491e-06
+        },
+        {
+          "feature": "precipitation_lag30",
+          "importance": 7.869005902739176e-06
+        },
+        {
+          "feature": "day_of_year",
+          "importance": 7.1246979757022e-06
+        },
+        {
+          "feature": "wind_speed",
+          "importance": 6.524546554918382e-06
+        },
+        {
+          "feature": "precipitation_lag7",
+          "importance": 4.637709416484018e-06
+        },
+        {
+          "feature": "month",
+          "importance": 1.2447687876315042e-06
+        }
+      ],
+      "xgboost": [
+        {
+          "feature": "evapotranspiration",
+          "importance": 0.4637051224708557
+        },
+        {
+          "feature": "temperature_max",
+          "importance": 0.20118147134780884
+        },
+        {
+          "feature": "aridity_index",
+          "importance": 0.08951445668935776
+        },
+        {
+          "feature": "temperature_avg",
+          "importance": 0.06569485366344452
+        },
+        {
+          "feature": "precipitation",
+          "importance": 0.06371041387319565
+        },
+        {
+          "feature": "ndvi",
+          "importance": 0.02670031413435936
+        },
+        {
+          "feature": "humidity",
+          "importance": 0.01797531731426716
+        },
+        {
+          "feature": "ndwi",
+          "importance": 0.017201727256178856
+        },
+        {
+          "feature": "heat_index",
+          "importance": 0.012404109351336956
+        },
+        {
+          "feature": "ndvi_trend",
+          "importance": 0.011262359097599983
+        },
+        {
+          "feature": "lst",
+          "importance": 0.009132622741162777
+        },
+        {
+          "feature": "ndvi_lag7",
+          "importance": 0.006946212146431208
+        },
+        {
+          "feature": "solar_radiation",
+          "importance": 0.0058701420202851295
+        },
+        {
+          "feature": "day_of_year",
+          "importance": 0.005867107305675745
+        },
+        {
+          "feature": "temperature_min",
+          "importance": 0.0012017517583444715
+        },
+        {
+          "feature": "wind_speed",
+          "importance": 0.00047873047878965735
+        },
+        {
+          "feature": "month",
+          "importance": 0.00032674381509423256
+        },
+        {
+          "feature": "ndvi_lag30",
+          "importance": 0.00023436428455170244
+        },
+        {
+          "feature": "temperature_avg_lag7",
+          "importance": 0.00020869412401225418
+        },
+        {
+          "feature": "temperature_avg_lag30",
+          "importance": 0.00011259337043156847
+        },
+        {
+          "feature": "humidity_lag30",
+          "importance": 0.00010673071665223688
+        },
+        {
+          "feature": "precipitation_lag30",
+          "importance": 8.401806553592905e-05
+        },
+        {
+          "feature": "humidity_lag7",
+          "importance": 4.41077136201784e-05
+        },
+        {
+          "feature": "precipitation_lag7",
+          "importance": 3.6113713576924056e-05
+        }
+      ],
+      "lightgbm": [
+        {
+          "feature": "ndvi",
+          "importance": 939
+        },
+        {
+          "feature": "precipitation",
+          "importance": 625
+        },
+        {
+          "feature": "evapotranspiration",
+          "importance": 471
+        },
+        {
+          "feature": "ndwi",
+          "importance": 466
+        },
+        {
+          "feature": "temperature_avg",
+          "importance": 453
+        },
+        {
+          "feature": "aridity_index",
+          "importance": 373
+        },
+        {
+          "feature": "lst",
+          "importance": 303
+        },
+        {
+          "feature": "humidity",
+          "importance": 235
+        },
+        {
+          "feature": "temperature_max",
+          "importance": 192
+        },
+        {
+          "feature": "ndvi_trend",
+          "importance": 120
+        },
+        {
+          "feature": "heat_index",
+          "importance": 117
+        },
+        {
+          "feature": "ndvi_lag7",
+          "importance": 72
+        },
+        {
+          "feature": "ndvi_lag30",
+          "importance": 31
+        },
+        {
+          "feature": "solar_radiation",
+          "importance": 30
+        },
+        {
+          "feature": "temperature_min",
+          "importance": 24
+        },
+        {
+          "feature": "day_of_year",
+          "importance": 21
+        },
+        {
+          "feature": "month",
+          "importance": 11
+        },
+        {
+          "feature": "temperature_avg_lag30",
+          "importance": 7
+        },
+        {
+          "feature": "wind_speed",
+          "importance": 6
+        },
+        {
+          "feature": "temperature_avg_lag7",
+          "importance": 2
+        },
+        {
+          "feature": "humidity_lag7",
+          "importance": 2
+        },
+        {
+          "feature": "precipitation_lag7",
+          "importance": 0
+        },
+        {
+          "feature": "precipitation_lag30",
+          "importance": 0
+        },
+        {
+          "feature": "humidity_lag30",
+          "importance": 0
+        }
+      ],
+      "gradient_boosting": [
+        {
+          "feature": "evapotranspiration",
+          "importance": 0.48710529564216537
+        },
+        {
+          "feature": "precipitation",
+          "importance": 0.19566840228923632
+        },
+        {
+          "feature": "temperature_avg",
+          "importance": 0.11066731339680118
+        },
+        {
+          "feature": "temperature_max",
+          "importance": 0.07947943642033552
+        },
+        {
+          "feature": "ndvi",
+          "importance": 0.0650758485398567
+        },
+        {
+          "feature": "ndwi",
+          "importance": 0.03182043171498023
+        },
+        {
+          "feature": "humidity",
+          "importance": 0.01661057550889385
+        },
+        {
+          "feature": "lst",
+          "importance": 0.01286765023299898
+        },
+        {
+          "feature": "ndvi_lag7",
+          "importance": 0.00029775392626976504
+        },
+        {
+          "feature": "aridity_index",
+          "importance": 0.00024196910985276515
+        },
+        {
+          "feature": "ndvi_lag30",
+          "importance": 0.00012307882626393297
+        },
+        {
+          "feature": "temperature_min",
+          "importance": 2.301840752693325e-05
+        },
+        {
+          "feature": "heat_index",
+          "importance": 8.225190153816833e-06
+        },
+        {
+          "feature": "solar_radiation",
+          "importance": 4.257709901239447e-06
+        },
+        {
+          "feature": "day_of_year",
+          "importance": 1.9267518170575507e-06
+        },
+        {
+          "feature": "ndvi_trend",
+          "importance": 1.4958630951047788e-06
+        },
+        {
+          "feature": "temperature_avg_lag30",
+          "importance": 1.2226044837761903e-06
+        },
+        {
+          "feature": "temperature_avg_lag7",
+          "importance": 8.158839408414141e-07
+        },
+        {
+          "feature": "precipitation_lag30",
+          "importance": 3.619549475360821e-07
+        },
+        {
+          "feature": "humidity_lag30",
+          "importance": 2.7862974458434116e-07
+        },
+        {
+          "feature": "precipitation_lag7",
+          "importance": 2.411770806792796e-07
+        },
+        {
+          "feature": "wind_speed",
+          "importance": 2.2753587377426283e-07
+        },
+        {
+          "feature": "humidity_lag7",
+          "importance": 1.7268378003814902e-07
+        },
+        {
+          "feature": "month",
+          "importance": 0.0
+        }
+      ]
+    },
+    "average": [
+      {
+        "feature": "ndvi",
+        "avg_importance": 234.79517208894993
+      },
+      {
+        "feature": "precipitation",
+        "avg_importance": 156.36372272235897
+      },
+      {
+        "feature": "evapotranspiration",
+        "avg_importance": 118.13385593322081
+      },
+      {
+        "feature": "ndwi",
+        "avg_importance": 116.51829553765525
+      },
+      {
+        "feature": "temperature_avg",
+        "avg_importance": 113.30846228697808
+      },
+      {
+        "feature": "aridity_index",
+        "avg_importance": 93.27265480345775
+      },
+      {
+        "feature": "lst",
+        "avg_importance": 75.75580922488159
+      },
+      {
+        "feature": "humidity",
+        "avg_importance": 58.759255650621895
+      },
+      {
+        "feature": "temperature_max",
+        "avg_importance": 48.0812270759016
+      },
+      {
+        "feature": "ndvi_trend",
+        "avg_importance": 30.002859481094816
+      },
+      {
+        "feature": "heat_index",
+        "avg_importance": 29.25313562823182
+      },
+      {
+        "feature": "ndvi_lag7",
+        "avg_importance": 18.001840821919536
+      },
+      {
+        "feature": "ndvi_lag30",
+        "avg_importance": 7.750092312716082
+      },
+      {
+        "feature": "solar_radiation",
+        "avg_importance": 7.501470593428641
+      },
+      {
+        "feature": "temperature_min",
+        "avg_importance": 6.000310619606998
+      },
+      {
+        "feature": "day_of_year",
+        "avg_importance": 5.2514690396888675
+      },
+      {
+        "feature": "month",
+        "avg_importance": 2.7500819971459705
+      },
+      {
+        "feature": "temperature_avg_lag30",
+        "avg_importance": 1.7500327320855995
+      },
+      {
+        "feature": "wind_speed",
+        "avg_importance": 1.5001213706403045
+      },
+      {
+        "feature": "temperature_avg_lag7",
+        "avg_importance": 0.5000547171789369
+      },
+      {
+        "feature": "humidity_lag7",
+        "avg_importance": 0.5000131097449521
+      },
+      {
+        "feature": "humidity_lag30",
+        "avg_importance": 2.8961448129325185e-05
+      },
+      {
+        "feature": "precipitation_lag30",
+        "avg_importance": 2.306225659655108e-05
+      },
+      {
+        "feature": "precipitation_lag7",
+        "avg_importance": 1.0248150018521839e-05
+      }
+    ]
+  },
+  "timestamp": "20260121_201436",
+  "models_trained": [
+    "random_forest",
+    "xgboost",
+    "lightgbm",
+    "gradient_boosting",
+    "ridge"
+  ]
+}

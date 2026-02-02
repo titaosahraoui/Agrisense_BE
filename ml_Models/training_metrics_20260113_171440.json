@@ -1,0 +1,316 @@
+{
+  "regression": {
+    "metrics": {
+      "train_score": 0.9999999961819694,
+      "test_score": 0.31171352155937304,
+      "mae": 4.5629943500865595,
+      "rmse": 6.408086504269801,
+      "r2": 0.31171352155937304
+    },
+    "feature_importance": {
+      "top_features": [
+        {
+          "feature": "solar_radiation",
+          "importance": 0.16787001490592957
+        },
+        {
+          "feature": "ndvi",
+          "importance": 0.14296294748783112
+        },
+        {
+          "feature": "precipitation",
+          "importance": 0.14287155866622925
+        },
+        {
+          "feature": "lst",
+          "importance": 0.10590493679046631
+        },
+        {
+          "feature": "evapotranspiration",
+          "importance": 0.09437716752290726
+        },
+        {
+          "feature": "et_precip_ratio",
+          "importance": 0.08592696487903595
+        },
+        {
+          "feature": "temp_lag_2",
+          "importance": 0.06972144544124603
+        },
+        {
+          "feature": "precip_lag_2",
+          "importance": 0.05085599049925804
+        },
+        {
+          "feature": "temp_ma_6",
+          "importance": 0.034311674535274506
+        },
+        {
+          "feature": "precip_ma_6",
+          "importance": 0.029368242248892784
+        }
+      ],
+      "importance_df": {
+        "feature": {
+          "3": "solar_radiation",
+          "5": "ndvi",
+          "1": "precipitation",
+          "7": "lst",
+          "4": "evapotranspiration",
+          "27": "et_precip_ratio",
+          "17": "temp_lag_2",
+          "15": "precip_lag_2",
+          "24": "temp_ma_6",
+          "23": "precip_ma_6",
+          "18": "precip_lag_3",
+          "16": "ndvi_lag_2",
+          "10": "month_cos",
+          "20": "temp_lag_3",
+          "2": "humidity",
+          "0": "temperature_avg",
+          "13": "ndvi_lag_1",
+          "6": "ndwi",
+          "19": "ndvi_lag_3",
+          "14": "temp_lag_1",
+          "21": "precip_ma_3",
+          "12": "precip_lag_1",
+          "26": "precip_cumul_6m",
+          "22": "temp_ma_3",
+          "9": "month_sin",
+          "8": "month",
+          "25": "precip_cumul_3m",
+          "11": "season_encoded"
+        },
+        "importance": {
+          "3": 0.16787001490592957,
+          "5": 0.14296294748783112,
+          "1": 0.14287155866622925,
+          "7": 0.10590493679046631,
+          "4": 0.09437716752290726,
+          "27": 0.08592696487903595,
+          "17": 0.06972144544124603,
+          "15": 0.05085599049925804,
+          "24": 0.034311674535274506,
+          "23": 0.029368242248892784,
+          "18": 0.01563809998333454,
+          "16": 0.014150898903608322,
+          "10": 0.012673956342041492,
+          "20": 0.00909624807536602,
+          "2": 0.008268260397017002,
+          "0": 0.005727060604840517,
+          "13": 0.0029000581707805395,
+          "6": 0.0020177585538476706,
+          "19": 0.0017080357065424323,
+          "14": 0.0013558099744841456,
+          "21": 0.0011171724181622267,
+          "12": 0.0007022907957434654,
+          "26": 0.0003950337413698435,
+          "22": 7.729013304924592e-05,
+          "9": 7.861264066377771e-07,
+          "8": 2.3678067861965246e-07,
+          "25": 1.0569898734047456e-08,
+          "11": 0.0
+        }
+      }
+    },
+    "model_type": "regression",
+    "model_name": "xgb",
+    "n_features": 28,
+    "n_samples": 72,
+    "train_size": 57,
+    "test_size": 15,
+    "training_date": "2026-01-13T17:14:40.284714",
+    "feature_names": [
+      "temperature_avg",
+      "precipitation",
+      "humidity",
+      "solar_radiation",
+      "evapotranspiration",
+      "ndvi",
+      "ndwi",
+      "lst",
+      "month",
+      "month_sin",
+      "month_cos",
+      "season_encoded",
+      "precip_lag_1",
+      "ndvi_lag_1",
+      "temp_lag_1",
+      "precip_lag_2",
+      "ndvi_lag_2",
+      "temp_lag_2",
+      "precip_lag_3",
+      "ndvi_lag_3",
+      "temp_lag_3",
+      "precip_ma_3",
+      "temp_ma_3",
+      "precip_ma_6",
+      "temp_ma_6",
+      "precip_cumul_3m",
+      "precip_cumul_6m",
+      "et_precip_ratio"
+    ]
+  },
+  "classification": {
+    "metrics": {
+      "train_score": 1.0,
+      "test_score": 1.0,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "feature_importance": {
+      "top_features": [
+        {
+          "feature": "solar_radiation",
+          "importance": 0.08611730281598633
+        },
+        {
+          "feature": "precipitation",
+          "importance": 0.08433910534323641
+        },
+        {
+          "feature": "precip_cumul_6m",
+          "importance": 0.07441175018459642
+        },
+        {
+          "feature": "ndvi_lag_2",
+          "importance": 0.07031419469815878
+        },
+        {
+          "feature": "et_precip_ratio",
+          "importance": 0.06567206069171333
+        },
+        {
+          "feature": "temp_lag_3",
+          "importance": 0.06536851638536541
+        },
+        {
+          "feature": "temp_ma_6",
+          "importance": 0.0572213847464459
+        },
+        {
+          "feature": "precip_ma_6",
+          "importance": 0.044270163971216914
+        },
+        {
+          "feature": "ndvi",
+          "importance": 0.043879304013755505
+        },
+        {
+          "feature": "temperature_avg",
+          "importance": 0.04358433978193593
+        }
+      ],
+      "importance_df": {
+        "feature": {
+          "3": "solar_radiation",
+          "1": "precipitation",
+          "26": "precip_cumul_6m",
+          "16": "ndvi_lag_2",
+          "27": "et_precip_ratio",
+          "20": "temp_lag_3",
+          "24": "temp_ma_6",
+          "23": "precip_ma_6",
+          "5": "ndvi",
+          "0": "temperature_avg",
+          "7": "lst",
+          "6": "ndwi",
+          "17": "temp_lag_2",
+          "19": "ndvi_lag_3",
+          "18": "precip_lag_3",
+          "10": "month_cos",
+          "15": "precip_lag_2",
+          "13": "ndvi_lag_1",
+          "4": "evapotranspiration",
+          "8": "month",
+          "14": "temp_lag_1",
+          "12": "precip_lag_1",
+          "21": "precip_ma_3",
+          "25": "precip_cumul_3m",
+          "9": "month_sin",
+          "2": "humidity",
+          "11": "season_encoded",
+          "22": "temp_ma_3"
+        },
+        "importance": {
+          "3": 0.08611730281598633,
+          "1": 0.08433910534323641,
+          "26": 0.07441175018459642,
+          "16": 0.07031419469815878,
+          "27": 0.06567206069171333,
+          "20": 0.06536851638536541,
+          "24": 0.0572213847464459,
+          "23": 0.044270163971216914,
+          "5": 0.043879304013755505,
+          "0": 0.04358433978193593,
+          "7": 0.03836076970702479,
+          "6": 0.036101693376280046,
+          "17": 0.035527471084181694,
+          "19": 0.032740588165090505,
+          "18": 0.03158698186504502,
+          "10": 0.03061253145295094,
+          "15": 0.0272099061434841,
+          "13": 0.025690052165361302,
+          "4": 0.025194960322918993,
+          "8": 0.018029362954845498,
+          "14": 0.01449379351484259,
+          "12": 0.011275382094252275,
+          "21": 0.01092962695847688,
+          "25": 0.008713194491888645,
+          "9": 0.008659892475093005,
+          "2": 0.004323508032493709,
+          "11": 0.003698050772073646,
+          "22": 0.0016741117912854348
+        }
+      }
+    },
+    "model_type": "classification",
+    "model_name": "rf",
+    "n_features": 28,
+    "n_samples": 72,
+    "train_size": 57,
+    "test_size": 15,
+    "training_date": "2026-01-13T17:14:40.825682",
+    "feature_names": [
+      "temperature_avg",
+      "precipitation",
+      "humidity",
+      "solar_radiation",
+      "evapotranspiration",
+      "ndvi",
+      "ndwi",
+      "lst",
+      "month",
+      "month_sin",
+      "month_cos",
+      "season_encoded",
+      "precip_lag_1",
+      "ndvi_lag_1",
+      "temp_lag_1",
+      "precip_lag_2",
+      "ndvi_lag_2",
+      "temp_lag_2",
+      "precip_lag_3",
+      "ndvi_lag_3",
+      "temp_lag_3",
+      "precip_ma_3",
+      "temp_ma_3",
+      "precip_ma_6",
+      "temp_ma_6",
+      "precip_cumul_3m",
+      "precip_cumul_6m",
+      "et_precip_ratio"
+    ]
+  },
+  "training_date": "2026-01-13T17:14:40.871688",
+  "data_info": {
+    "n_samples": 72,
+    "n_wilayas": 1,
+    "date_range": {
+      "start": "2018-01-15",
+      "end": "2023-12-15"
+    }
+  }
+}
