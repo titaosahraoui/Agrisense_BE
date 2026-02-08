@@ -145,6 +145,61 @@ class DataCleaner:
         
         return result
     
+    
+    def clean_daily_validation_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Clean daily collected data without normalization or encoding.
+        Focuses on filling missing values and ensuring data integrity.
+        """
+        df_clean = df.copy()
+        print("🧹 Running Specialized Daily Data Cleaning...")
+        
+        # 1. Satellite Data Interpolation
+        satellite_cols = ['ndvi', 'ndwi', 'lst']
+        print("  🛰️ Applying time interpolation for satellite data...")
+        
+        if 'date' in df_clean.columns and df_clean['date'].dtype == 'object':
+            df_clean['date'] = pd.to_datetime(df_clean['date'])
+            
+        if 'wilaya_code' in df_clean.columns and 'date' in df_clean.columns:
+            df_clean = df_clean.sort_values(['wilaya_code', 'date'])
+            for col in satellite_cols:
+                if col in df_clean.columns:
+                    current_missing = df_clean[col].isnull().sum()
+                    if current_missing > 0:
+                        df_clean[col] = df_clean.groupby('wilaya_code')[col].transform(
+                            lambda x: x.interpolate(method='linear', limit_direction='both')
+                        )
+                        print(f"    - {col}: filled values via interpolation")
+
+        # 2. KNN Imputation for remaining numeric nulls
+        numeric_cols = df_clean.select_dtypes(include=[np.number]).columns.tolist()
+        exclude_cols = ['id', 'wilaya_code', 'day_of_year', 'month', 'year']
+        impute_cols = [col for col in numeric_cols if col not in exclude_cols]
+        
+        if impute_cols and df_clean[impute_cols].isnull().values.any():
+            print(f"  Unknown values detected, running KNN Imputation on {len(impute_cols)} columns...")
+            imputer = KNNImputer(n_neighbors=5)
+            
+            non_imputed = df_clean.drop(columns=impute_cols)
+            to_impute = df_clean[impute_cols]
+            
+            imputed_array = imputer.fit_transform(to_impute)
+            df_imputed = pd.DataFrame(imputed_array, columns=impute_cols, index=df_clean.index)
+            
+            df_clean = pd.concat([non_imputed, df_imputed], axis=1)
+        
+
+        # 4. Type Conversion (No Normalization)
+        for col in df_clean.select_dtypes(include=[np.number]).columns:
+            if df_clean[col].dtype in [np.float64, np.float32]:
+                df_clean[col] = df_clean[col].astype(float)
+            elif df_clean[col].dtype in [np.int64, np.int32]:
+                df_clean[col] = df_clean[col].astype(int)
+        
+        print("✅ Daily Data Cleaning Complete.")
+        return df_clean
+
     def clean_data(self, df: pd.DataFrame, strategy: str = "advanced") -> pd.DataFrame:
         """
         Clean data using various strategies

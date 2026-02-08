@@ -1,11 +1,12 @@
 
 import asyncio
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Optional
 import pandas as pd
 from sqlalchemy.orm import Session
 import json
 from .. import models
+from .stress_analysis import StressAnalysisService
 
 class DailyDataCollector:
     def __init__(self, weather_service, satellite_service):
@@ -54,12 +55,10 @@ class DailyDataCollector:
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
         
-        all_daily_data = []
-        
-        # Process year by year to avoid API limits
+        raw_data_buffer = []  # Buffer for raw data before cleaning
         current_year = start_dt.year
         end_year = end_dt.year
-        
+
         for year in range(current_year, end_year + 1):
             print(f"\nProcessing year {year}...")
             
@@ -125,18 +124,87 @@ class DailyDataCollector:
                     if month_start.date() <= w['date'].date() <= month_end.date()
                 ]
                 
+                # Collect RAW data for batch cleaning
                 for daily_weather in daily_weather_for_month:
-                    training_entry = self._create_daily_training_entry(
-                        wilaya_code=int(wilaya_code),
-                        date=daily_weather['date'],
-                        weather_data=daily_weather,
-                        satellite_stats=satellite_stats,
-                        year=year
-                    )
-                    all_daily_data.append(training_entry)
+                    raw_entry = {
+                        'wilaya_code': int(wilaya_code),
+                        'date': daily_weather['date'],
+                        'year': year,
+                        
+                        # Weather fields
+                        'temperature_avg': daily_weather.get('temperature_avg'),
+                        'temperature_max': daily_weather.get('temperature_max'),
+                        'temperature_min': daily_weather.get('temperature_min'),
+                        'precipitation': daily_weather.get('precipitation'),
+                        'humidity': daily_weather.get('humidity'),
+                        'solar_radiation': daily_weather.get('solar_radiation'),
+                        'wind_speed': daily_weather.get('wind_speed'),
+                        'et0_fao': daily_weather.get('et0_fao'),
+                        
+                        # Satellite fields (Mapped to lowercase for DataCleaner)
+                        'ndvi': satellite_stats.get('NDVI') if satellite_stats else None,
+                        'ndwi': satellite_stats.get('NDWI') if satellite_stats else None,
+                        'lst': satellite_stats.get('LST') if satellite_stats else None,
+                    }
+                    raw_data_buffer.append(raw_entry)
             
-            print(f"  Year {year}: Collected {len([d for d in all_daily_data if d['date'].year == year])} daily records")
+            print(f"  Year {year}: Collected raw data points: {len([d for d in raw_data_buffer if d['date'].year == year])}")
         
+        # 1. Clean collected data
+        # We collected ALL raw data first to allow efficient time-series interpolation/imputation
+        all_daily_data = []
+        
+        if raw_data_buffer:
+            print(f"\n🧹 Cleaning {len(raw_data_buffer)} raw records before processing...")
+            from .data_cleaner import DataCleaner
+            cleaner = DataCleaner(db)
+            
+            # Convert to DataFrame
+            df_raw = pd.DataFrame(raw_data_buffer)
+            
+            # Clean (Interpolate Satellite gaps, Impute Weather gaps) - No Normalization
+            df_cleaned = cleaner.clean_daily_validation_data(df_raw)
+            
+            print("✨ Creating final training entries with calculated stress scores...")
+            
+            # 2. Create entries from CLEANED data
+            cleaned_records = df_cleaned.to_dict('records')
+            
+            for row in cleaned_records:
+                # Reconstruct inputs for _create_daily_training_entry
+                # This ensures we use the CLEANED values for stress calculation
+                
+                simulated_weather = {
+                    'temperature_avg': row.get('temperature_avg'),
+                    'temperature_max': row.get('temperature_max'),
+                    'temperature_min': row.get('temperature_min'),
+                    'precipitation': row.get('precipitation'),
+                    'humidity': row.get('humidity'),
+                    'solar_radiation': row.get('solar_radiation'),
+                    'wind_speed': row.get('wind_speed'),
+                    'et0_fao': row.get('et0_fao'),
+                    'date': row.get('date') # vital
+                }
+                
+                # Map back to Uppercase for consistency if needed, though service handles both usually.
+                # But _create_daily_training_entry expects dict to extract 'NDVI' etc.
+                simulated_sat = {
+                    'NDVI': row.get('ndvi'),
+                    'NDWI': row.get('ndwi'),
+                    'LST': row.get('lst')
+                } if row.get('ndvi') is not None else {}
+                
+                entry = self._create_daily_training_entry(
+                    wilaya_code=int(row['wilaya_code']),
+                    date=row['date'],
+                    weather_data=simulated_weather,
+                    satellite_stats=simulated_sat,
+                    year=row.get('year', row['date'].year)
+                )
+                
+                if entry:
+                    all_daily_data.append(entry)
+
         # Save to database
         saved_count = await self._save_daily_training_data(all_daily_data, db)
         
@@ -146,38 +214,35 @@ class DailyDataCollector:
             "period": f"{start_date} to {end_date}",
             "days_collected": len(all_daily_data),
             "days_saved": saved_count,
-            "sample_dates": [d['date'].strftime("%Y-%m-%d") for d in all_daily_data[:5]]
+            "sample_dates": [d['date'].strftime("%Y-%m-%d") for d in all_daily_data[:5]] if all_daily_data else []
         }
     
     def _create_daily_training_entry(self, wilaya_code: int, date: datetime, 
                                    weather_data: Dict, satellite_stats: Dict, year: int) -> Dict:
-        """Create a daily training data entry"""
+        """Create a daily training data entry with stress score calculated from clean data"""
         
-        # Calculate day-specific stress score
-        if satellite_stats:
-            # Use satellite data for stress calculation
-            indicators = {
-                'temperature': weather_data.get('temperature_avg', 20),
-                'precipitation': weather_data.get('precipitation', 0),
-                'humidity': weather_data.get('humidity', 50),
-                'evapotranspiration': weather_data.get('et0_fao', 0),
-                'ndvi': satellite_stats.get('NDVI'),
-                'lst': satellite_stats.get('LST'),
-                'ndwi': satellite_stats.get('NDWI')
-            }
-        else:
-            # Use weather data only
-            indicators = {
-                'temperature': weather_data.get('temperature_avg', 20),
-                'precipitation': weather_data.get('precipitation', 0),
-                'humidity': weather_data.get('humidity', 50),
-                'evapotranspiration': weather_data.get('et0_fao', 0)
-            }
+        # Prepare indicators for stress calculation
+        indicators = {
+            'temperature': weather_data.get('temperature_avg'),
+            'precipitation': weather_data.get('precipitation'),
+            'humidity': weather_data.get('humidity'),
+            'evapotranspiration': weather_data.get('et0_fao'),
+            'ndvi': satellite_stats.get('NDVI'),
+            'lst': satellite_stats.get('LST'),
+            'ndwi': satellite_stats.get('NDWI')
+        }
         
-        # Calculate stress score
+        # Calculate stress score immediately
         from .stress_analysis import StressAnalysisService
         analysis_service = StressAnalysisService()
-        stress_score = analysis_service.calculate_stress_score(indicators)
+        
+        try:
+            stress_score = analysis_service.calculate_stress_score(indicators)
+            stress_level = analysis_service.determine_stress_level(stress_score)
+        except Exception:
+            # Fallback if calculation fails (though data should be clean now)
+            stress_score = 0.5
+            stress_level = "moderate"
         
         return {
             'wilaya_code': wilaya_code,
@@ -193,10 +258,10 @@ class DailyDataCollector:
             'wind_speed': weather_data.get('wind_speed'),
             'evapotranspiration': weather_data.get('et0_fao'),
             
-            # Satellite data (same for all days in the month)
-            'ndvi': satellite_stats.get('NDVI') if satellite_stats else None,
-            'ndwi': satellite_stats.get('NDWI') if satellite_stats else None,
-            'lst': satellite_stats.get('LST') if satellite_stats else None,
+            # Satellite data
+            'ndvi': satellite_stats.get('NDVI'),
+            'ndwi': satellite_stats.get('NDWI'),
+            'lst': satellite_stats.get('LST'),
             
             # Time features
             'month': date.month,
@@ -206,7 +271,7 @@ class DailyDataCollector:
             
             # Target
             'stress_score': stress_score,
-            'stress_level': analysis_service.determine_stress_level(stress_score),
+            'stress_level': stress_level,
             
             # Meta
             'source': f'NASA_GEE_{year}',

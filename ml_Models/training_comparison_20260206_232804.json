@@ -1,0 +1,93 @@
+{
+  "hybrid": {
+    "cluster_summary": [
+      {
+        "cluster": 1,
+        "stress_score": 99.68,
+        "stress_level": "severe",
+        "size": 12039,
+        "percentage": 21.543995275675094,
+        "ndvi": 0.1096451464277498,
+        "temperature": 31.43901403771075,
+        "precipitation": 0.046632610681974995,
+        "evapotranspiration": 9.124224603372365,
+        "humidity": 21.74064955561088
+      },
+      {
+        "cluster": 4,
+        "stress_score": 68.75,
+        "stress_level": "high",
+        "size": 18728,
+        "percentage": 33.51407455127861,
+        "ndvi": 0.15682458421511025,
+        "temperature": 22.256738758944785,
+        "precipitation": 0.21861422620956883,
+        "evapotranspiration": 5.518484460108939,
+        "humidity": 46.080754031827404
+      },
+      {
+        "cluster": 0,
+        "stress_score": 53.25,
+        "stress_level": "moderate",
+        "size": 16274,
+        "percentage": 29.122599810311193,
+        "ndvi": 0.17304091179781322,
+        "temperature": 12.955866306217747,
+        "precipitation": 0.8534031703121145,
+        "evapotranspiration": 2.45886274268862,
+        "humidity": 66.58769599410174
+      },
+      {
+        "cluster": 2,
+        "stress_score": 36.5,
+        "stress_level": "low",
+        "size": 7642,
+        "percentage": 13.675488985522808,
+        "ndvi": 0.4437388522446931,
+        "temperature": 13.96777414289453,
+        "precipitation": 1.0817953415336332,
+        "evapotranspiration": 2.7153088196807116,
+        "humidity": 69.99840748495157
+      },
+      {
+        "cluster": 3,
+        "stress_score": 23.0,
+        "stress_level": "minimal",
+        "size": 1198,
+        "percentage": 2.1438413772122904,
+        "ndvi": 0.27864980363537517,
+        "temperature": 13.77159432387312,
+        "precipitation": 18.123313856427377,
+        "evapotranspiration": 2.057470784641068,
+        "humidity": 79.91586811352254
+      }
+    ],
+    "metrics": {
+      "mae": 12.80421877464888,
+      "rmse": 15.633340758075652,
+      "correlation": 0.8227388179871294,
+      "level_agreement": 0.40892253180866484
+    },
+    "model_path": "ml_Models/hybrid_stress_model_20260206_232710.pkl",
+    "region_type": "mediterranean",
+    "n_clusters": 5,
+    "timestamp": "20260206_232710"
+  },
+  "supervised": {
+    "metrics": {
+      "train_score": 0.9994944546720542,
+      "test_score": 0.9991554716390407,
+      "mae": 0.21320590791025096,
+      "rmse": 0.5719856356963088,
+      "r2": 0.9991554716390407
+    },
+    "model_path": "ml_Models/regression_model_20260206_232804.pkl",
+    "model_name": "rf",
+    "timestamp": "20260206_232804"
+  },
+  "comparison": {
+    "hybrid_available": true,
+    "supervised_available": true,
+    "recommended": "supervised"
+  }
+}

@@ -8,7 +8,8 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import TimeSeriesSplit, cross_val_score
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 import xgboost as xgb
 import lightgbm as lgb
 from sklearn.impute import SimpleImputer
@@ -81,11 +82,37 @@ class OptimizedModelTrainer:
             }
         }
         
-        # Scale features
-        scaler = StandardScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
-        X_test_scaled = scaler.transform(X_test)
         
+        # Prepare Preprocessor (Scaling + Encoding)
+        # Identify columns
+        numeric_features = X_train.select_dtypes(include=['int64', 'float64', 'int32', 'float32']).columns
+        # Explicitly check for season or object types
+        categorical_features = X_train.select_dtypes(include=['object', 'category', 'bool']).columns
+        
+        print(f"   Numeric features: {len(numeric_features)}")
+        print(f"   Categorical features: {len(categorical_features)}")
+        
+        transformers = [
+            ('num', StandardScaler(), numeric_features)
+        ]
+        
+        if len(categorical_features) > 0:
+            transformers.append(
+                ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_features)
+            )
+            
+        preprocessor = ColumnTransformer(transformers=transformers, verbose_feature_names_out=False)
+        
+        # Fit and Transform
+        X_train_processed = preprocessor.fit_transform(X_train)
+        X_test_processed = preprocessor.transform(X_test)
+        
+        # Get feature names after transformation (for importance)
+        if hasattr(preprocessor, 'get_feature_names_out'):
+            feature_names = preprocessor.get_feature_names_out()
+        else:
+            feature_names = numeric_features
+            
         # Train each model
         for name, config in model_configs.items():
             print(f"\n📊 Training {name}...")
@@ -94,15 +121,16 @@ class OptimizedModelTrainer:
                 model = config["model"]
                 
                 # Train model
-                model.fit(X_train_scaled, y_train)
+                model.fit(X_train_processed, y_train)
                 self.models[name] = {
                     "model": model,
-                    "scaler": scaler,
+                    "preprocessor": preprocessor, # Store preprocessor
+                    "scaler": preprocessor,       # Alias for compatibility
                     "description": config["description"]
                 }
                 
                 # Make predictions
-                y_pred = model.predict(X_test_scaled)
+                y_pred = model.predict(X_test_processed)
                 
                 # Calculate metrics
                 mse = mean_squared_error(y_test, y_pred)
@@ -122,10 +150,11 @@ class OptimizedModelTrainer:
                 # Get feature importance if available
                 if hasattr(model, 'feature_importances_'):
                     importances = model.feature_importances_
-                    self.feature_importance[name] = pd.DataFrame({
-                        'feature': X_train.columns,
-                        'importance': importances
-                    }).sort_values('importance', ascending=False)
+                    if len(importances) == len(feature_names):
+                        self.feature_importance[name] = pd.DataFrame({
+                            'feature': feature_names,
+                            'importance': importances
+                        }).sort_values('importance', ascending=False)
                 
                 print(f"   RMSE: {rmse:.4f}, R²: {r2:.4f}")
                 

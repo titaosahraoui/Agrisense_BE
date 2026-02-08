@@ -8,10 +8,12 @@ from ..database import get_db
 from .. import models
 
 from ..services.satellite_service import SatelliteService
+from ..services.prediction_service import PredictionService
 from datetime import datetime, timedelta
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 satellite_service = SatelliteService()
+prediction_service = PredictionService()
 
 @router.get("/summary")
 async def get_dashboard_summary(db: Session = Depends(get_db)):
@@ -37,17 +39,44 @@ async def get_dashboard_summary(db: Session = Depends(get_db)):
             )
         ).scalar() or 0
         
+        # Get Model Info
+        model_info = prediction_service.get_model_info()
+        
         return {
             "summary": {
                 "total_records": total_records,
                 "total_wilayas": wilaya_count,
                 "alerts_count": alerts,
                 "last_training": latest_training.isoformat() if latest_training else None,
+                "active_model": model_info.get("current_mode", "unknown"),
+                "supervised_ready": model_info.get("supervised_available", False),
                 "timestamp": datetime.utcnow().isoformat()
             }
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching dashboard summary: {str(e)}")
+
+@router.get("/model-insights")
+async def get_model_insights():
+    """Get detailed insights from the active prediction models"""
+    try:
+        # Force reload to ensure fresh stats
+        prediction_service.reload_models()
+        info = prediction_service.get_model_info()
+        
+        return {
+            "mode": info.get("current_mode"),
+            "models": {
+                "supervised": info.get("supervised_info"),
+                "hybrid": info.get("hybrid_info")
+            },
+            "capabilities": {
+                "can_predict_score": info.get("supervised_available", False),
+                "can_cluster": info.get("hybrid_available", False)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching model insights: {str(e)}")
 
 @router.get("/wilayas/stats")
 async def get_wilayas_statistics(
@@ -71,8 +100,6 @@ async def get_wilayas_statistics(
                 "timestamp": datetime.utcnow().isoformat()
             }
         
-        # Get date for last 30 days
-        month_ago = datetime.utcnow() - timedelta(days=30)
         
         # First, get all distinct wilaya codes from TrainingData (those that actually have data)
         wilaya_codes_with_data = db.query(
@@ -93,27 +120,67 @@ async def get_wilayas_statistics(
             models.Region.wilaya_code.in_(wilaya_codes_with_data)
         ).all()
         
-        # If no regions in database, create fallback from coordinates
         if not regions:
-            # Load coordinates file
+            # Load coordinates file and GADM data
             import json
+            from .zones import load_geojson_data, GEOJSON_DATA
+            
             try:
-                with open('algeria_cordinates.json', 'r') as f:
-                    coordinates_data = json.load(f)
+                load_geojson_data()
+                
+                coordinates_data = {}
+                try:
+                    with open('algeria_cordinates.json', 'r') as f:
+                        coordinates_data = json.load(f)
+                except FileNotFoundError:
+                    pass
                 
                 regions = []
                 for code in wilaya_codes_with_data:
                     wilaya_key = f"DZ{str(code).zfill(2)}"
+                    
+                    name = None
+                    lat = None
+                    lon = None
+                    
+                    # Try basic coordinates file first
                     if wilaya_key in coordinates_data:
                         coord_data = coordinates_data[wilaya_key]
-                        # Create a mock region
+                        name = coord_data.get('name')
+                        lat = coord_data.get('lat')
+                        lon = coord_data.get('lon')
+                    
+                    # Try GADM data if missing info
+                    if (not name or not lat) and code in GEOJSON_DATA:
+                        feature = GEOJSON_DATA[code]
+                        props = feature.get('properties', {})
+                        if not name:
+                            name = props.get('NAME_1')
+                        
+                        # Calculate centroid if needing lat/lon
+                        if not lat or not lon:
+                            pass 
+
+                    # Create a mock region if we found at least a name
+                    if name:
                         regions.append(type('Region', (), {
                             'wilaya_code': code,
-                            'name': coord_data['name'],
-                            'centroid_lat': coord_data['lat'],
-                            'centroid_lon': coord_data['lon']
+                            'name': name,
+                            'centroid_lat': lat or 0.0,
+                            'centroid_lon': lon or 0.0
                         })())
+                    else:
+                        # Fallback for completely unknown region
+                        regions.append(type('Region', (), {
+                            'wilaya_code': code,
+                            'name': f"Wilaya {code}",
+                            'centroid_lat': 0.0,
+                            'centroid_lon': 0.0
+                        })())
+                        
             except Exception as e:
+                # Log usage error but don't crash if fallback fails, just raise
+                print(f"Fallback error: {e}")
                 raise HTTPException(status_code=500, detail=f"Error loading coordinates: {str(e)}")
         
         wilaya_stats = []
@@ -132,7 +199,11 @@ async def get_wilayas_statistics(
             if stress_level and latest_data.stress_level != stress_level:
                 continue
             
-            # Calculate average statistics for last 30 days in a single query
+            # Use latest data date as reference for "current" stats
+            reference_date = latest_data.date
+            # Calculate average statistics for last 30 days relative to the latest data
+            window_start = reference_date - timedelta(days=30)
+            
             avg_scores = db.query(
                 func.avg(models.TrainingData.stress_score).label('avg_stress_score'),
                 func.avg(models.TrainingData.ndvi).label('avg_ndvi'),
@@ -144,7 +215,8 @@ async def get_wilayas_statistics(
             ).filter(
                 and_(
                     models.TrainingData.wilaya_code == region.wilaya_code,
-                    models.TrainingData.date >= month_ago
+                    models.TrainingData.date >= window_start,
+                    models.TrainingData.date <= reference_date
                 )
             ).first()
             
@@ -219,7 +291,12 @@ async def get_climate_summary(
         else:  # month
             days_back = 30
         
-        start_date = datetime.utcnow() - timedelta(days=days_back)
+        # Determine reference date (latest data point or now)
+        # This ensures we show relevant stats even for historical data
+        latest_date_result = db.query(func.max(models.TrainingData.date)).scalar()
+        reference_date = latest_date_result if latest_date_result else datetime.utcnow()
+        
+        start_date = reference_date - timedelta(days=days_back)
         
         # Get climate data from training data
         climate_data = db.query(
@@ -231,7 +308,10 @@ async def get_climate_summary(
             func.avg(models.TrainingData.ndwi).label('avg_ndwi'),
             func.count(models.TrainingData.id).label('data_points')
         ).filter(
-            models.TrainingData.date >= start_date
+            and_(
+                models.TrainingData.date >= start_date,
+                models.TrainingData.date <= reference_date
+            )
         ).first()
         
         # Calculate derived metrics
@@ -270,17 +350,29 @@ async def get_stress_timeline(
     """Get stress timeline data for a specific wilaya"""
     
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        # First check if any data exists for this wilaya to get the latest date
+        latest_record = db.query(models.TrainingData.date).filter(
+            models.TrainingData.wilaya_code == wilaya_code
+        ).order_by(models.TrainingData.date.desc()).first()
+        
+        if not latest_record:
+             raise HTTPException(status_code=404, detail="No timeline data found for this wilaya")
+        
+        # Use the latest available date as the reference point
+        reference_date = latest_record[0]
+        start_date = reference_date - timedelta(days=days)
         
         timeline_data = db.query(models.TrainingData).filter(
             and_(
                 models.TrainingData.wilaya_code == wilaya_code,
-                models.TrainingData.date >= start_date
+                models.TrainingData.date >= start_date,
+                models.TrainingData.date <= reference_date
             )
         ).order_by(models.TrainingData.date.asc()).all()
         
         if not timeline_data:
-            raise HTTPException(status_code=404, detail="No timeline data found for this wilaya")
+             # Should practically not happen if latest_record exists
+             raise HTTPException(status_code=404, detail="No timeline data found for this wilaya")
         
         # Format response
         formatted_data = []
@@ -333,16 +425,68 @@ async def get_satellite_indices(
             # Use the service method instead of local function
             return satellite_service.generate_sample_data(latest, wilaya_code)
         
+        # Collect distinct wilaya codes to batch fetch names
+        codes = list(set(record.wilaya_code for record in satellite_data))
+        
+        # Fetch regions from database
+        regions_db = db.query(models.Region).filter(models.Region.wilaya_code.in_(codes)).all()
+        region_map = {r.wilaya_code: r.name for r in regions_db}
+        
+        # Identify missing codes (not in DB)
+        missing_codes = [c for c in codes if c not in region_map]
+        
+        # Fallback if names are missing
+        if missing_codes:
+            import json
+            from .zones import load_geojson_data, GEOJSON_DATA
+            
+            try:
+                # Ensure GADM data is loaded
+                load_geojson_data()
+                
+                # Load coordinate names
+                coords_map = {}
+                try:
+                    with open('algeria_cordinates.json', 'r', encoding='utf-8') as f:
+                        coords_raw = json.load(f)
+                        for k, v in coords_raw.items():
+                            # Key format "DZ01" -> 1
+                            if k.startswith("DZ") and k[2:].isdigit():
+                                try:
+                                    c_code = int(k[2:])
+                                    coords_map[c_code] = v.get('name')
+                                except: pass
+                except: pass
+                
+                for code in missing_codes:
+                    name = None
+                    
+                    # Try basic JSON first
+                    if code in coords_map:
+                        name = coords_map[code]
+                    
+                    # Try GADM GeoJSON
+                    if not name and code in GEOJSON_DATA:
+                        props = GEOJSON_DATA[code].get('properties', {})
+                        name = props.get('NAME_1')
+                        
+                    if name:
+                        region_map[code] = name
+                    else:
+                        region_map[code] = f"Wilaya {code}"
+                        
+            except Exception as e:
+                print(f"Region name fallback error: {e}")
+                # Ensure we have at least a default name
+                for code in missing_codes:
+                    if code not in region_map:
+                        region_map[code] = f"Wilaya {code}"
+        
         # Format response
         formatted_data = []
         for record in satellite_data:
-            # Get wilaya name
-            region = db.query(models.Region).filter(
-                models.Region.wilaya_code == record.wilaya_code
-            ).first()
-            
             formatted_data.append({
-                "name": region.name if region else f"Wilaya {record.wilaya_code}",
+                "name": region_map.get(record.wilaya_code, f"Wilaya {record.wilaya_code}"),
                 "date": record.date.isoformat() if record.date else None,
                 "ndvi": float(record.ndvi) if record.ndvi else None,
                 "ndwi": float(record.ndwi) if record.ndwi else None,
